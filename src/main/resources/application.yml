@@ -1,0 +1,33 @@
+server:
+  port: 8090
+spring:
+  main:
+    allow-bean-definition-overriding: true
+    allow-circular-references: true
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    url: jdbc:mysql://139.155.84.163:3306/my_kotlin?serverTimezone=Asia/Shanghai&characterEncoding=utf8&useSSL=false&zeroDateTimeBehavior=convertToNull
+    username: root
+    password: root_pangjie
+  jpa:
+    properties:
+      hibernate:
+        ddl-auto: none
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    #        format_sql: true
+    open_in_view: false
+#    show_sql: true
+  redis:
+    #����redis
+    database: 1
+    host: 139.155.84.163
+    port: 6379
+    password: root_pangjie
+    #��ʱʱ��
+    timeout: 5000
+jwt:
+  tokenHeader: PJ-Token #JWT�洢������ͷ
+  tokenHead: Bearer  #����ǰ׺
+  secret: pangjieAdminSecretpangjieAdminSecretpangjieAdminSecretpangjieAdminSecretpangjieAdminSecretpangjieAdminSecret #JWT�ӽ���ʹ�õ���Կ
+  expiration: 86400 #JWT�ĳ�����ʱ����(60*60*24)
