@@ -1,38 +1,32 @@
 package com.my.kotlin.system.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
+import com.my.kotlin.system.config.query.QueryHelp;
 import com.my.kotlin.system.config.security.JwtTokenUtil;
-import com.my.kotlin.system.config.security.JwtUser;
 import com.my.kotlin.system.config.security.MyPasswordEncoder;
-import com.my.kotlin.system.config.security.SpringSecurityConfig;
-import com.my.kotlin.system.entity.MenuInfo;
 import com.my.kotlin.system.entity.UserInfo;
 import com.my.kotlin.system.repository.UserInfoRepo;
 import com.my.kotlin.system.service.UserInfoService;
 import com.my.kotlin.system.service.dto.UserInfoDto;
+import com.my.kotlin.system.service.query.UserInfoQuery;
 import com.my.kotlin.util.RedisUtil;
 import com.my.kotlin.util.WxUtil;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -50,6 +44,10 @@ public class UserInfoServiceImpl implements UserInfoService {
     private Long expiration;
 
 
+    @Override
+    public Page<UserInfo> query(UserInfoQuery userInfoQuery, Pageable pageable) {
+        return userInfoRepo.findAll(((root, query, criteriaBuilder) -> QueryHelp.getPredicate(root, userInfoQuery, criteriaBuilder)),pageable);
+    }
 
     @Override
     public UserInfo findById(Integer id) {

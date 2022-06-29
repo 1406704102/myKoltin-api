@@ -1,5 +1,6 @@
 package com.my.kotlin.system.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.my.kotlin.system.entity.DictDetailInfo;
 import com.my.kotlin.system.entity.QuestionInfo;
 import com.my.kotlin.system.service.QuestionInfoService;
@@ -22,6 +23,9 @@ public class QuestionInfoController {
     @GetMapping
     @PreAuthorize("@roleCheck.check('question::query')")
     public ResponseEntity<Object> query(QuestionInfoQuery questionInfoQuery, Pageable pageable) {
+        if (StringUtils.equals(questionInfoQuery.getQuestionType(), "null")) {
+            questionInfoQuery.setQuestionType(null);
+        }
         Page<QuestionInfo> pages = questionInfoService.query(questionInfoQuery, pageable);
         return new ResponseEntity<>(pages, HttpStatus.OK);
     }
