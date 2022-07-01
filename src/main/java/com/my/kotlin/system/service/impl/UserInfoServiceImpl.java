@@ -80,22 +80,25 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public Map<String, Object> getToken(UserInfoDto userInfoDto) {
         String token = null;
+        HashMap<String, Object> data = new HashMap<>();
         try {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(userInfoDto.getUserName());
+            String userName = userInfoDto.getUserName();
+            UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+            UserInfo userInfo = userInfoRepo.findByUserName(userName).get();
+            data.put("userInfo", userInfo);
 //            List<String> collect = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList());
 
-            if (!myPasswordEncoder.passwordEncoder().matches(userInfoDto.getUserName(), userDetails.getPassword())) {
+            if (!myPasswordEncoder.passwordEncoder().matches(userName, userDetails.getPassword())) {
                 throw new BadCredentialsException("密码不正确");
             }
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             SecurityContextHolder.getContext().setAuthentication(authentication);
             token = jwtTokenUtil.generateToken(userDetails);
-            redisUtil.set("token:" + userInfoDto.getUserName(), token, expiration/60);
+            redisUtil.set("token:" + userName, token, expiration/60);
         } catch (AuthenticationException e) {
             log.warn("登录异常:{}", e.getMessage());
         }
 
-        HashMap<String, Object> data = new HashMap<>();
         data.put("token", tokenHead + " " + token);
         return data;
     }
