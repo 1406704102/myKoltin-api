@@ -79,7 +79,7 @@ public class QuestionInfoServiceImpl implements QuestionInfoService {
                     "." +
                     FileUtil.getExtensionName(key);
 
-            String upToken = auth.uploadToken("pangjie3");
+            String upToken = auth.uploadToken("pangjie");
             Response response = uploadManager.put(file.getBytes(), key, upToken);
             //解析上传成功的结果
 
